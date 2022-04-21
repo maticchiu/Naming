@@ -33,9 +33,6 @@ import Settings
 # 火 fire
 # 土 earth
 
-aiElement5 = [4, 1, 0, 2, 3]
-strElement5 = ["金", "木", "水", "火", "土"]
-
 
 ###################################################
 #                   Main class
@@ -63,23 +60,20 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         self.pushButton_SelectFullName.clicked.connect(self.button_SelectFullName)
         self.lineEdit_LastName.textChanged.connect(self.lineEdit_LastName_TextChanged)
         
-        
         #
         # Sub Form
         #
         self.NameCountResult = ncr.Main()
-        self.NameCountResult.remove_item_index_signal.connect(self.RemoveNameCountItem)
-        
         self.SelectWord = sw.Main()
-        
         self.SelectFullName = sfn.Main()
         
-        if not os.path.isdir(Settings.USER_PATH):
-            os.mkdir(Settings.USER_PATH)
         
         #
-        # File Read
+        # File
         #
+        if not os.path.isdir(Settings.USER_PATH):
+            os.mkdir(Settings.USER_PATH)
+
         fNameCountDescription = open(Settings.NAME_COUNT_DESCRIPTION_PATH, 'r', encoding="utf-8")
         for line in fNameCountDescription:
             self.name_count_description.append(line[:-1])   # Ignore '\n'
@@ -107,16 +101,14 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         pass
     
     def button_SelectNameWord(self):
+        self.SelectWord.setWindowModality(Qt.ApplicationModal)  # set sub-window on top
         self.SelectWord.show()
         pass
 
     def button_GetNameCount(self):
     
-        # element5_chinese = ["金", "木", "水", "火", "土"]
         five_level_name_count_list = []
         self.name_count_result_list = []    # item = [[last_name_count, name1_count, name2_count], grade_list[grade, grade_string], name_count_description]
-        
-        # name_count_list = []
     
         #
         # Get name count list according to five level
@@ -148,12 +140,12 @@ class Main(QMainWindow, ui.Ui_MainWindow):
             fNameCountResult.write(str(item) + "\n")
         fNameCountResult.close()
     
-        
+        self.NameCountResult.setWindowModality(Qt.ApplicationModal)
         self.NameCountResult.show()
-        # self.NameCountResult.ShowNameCount(self.name_count_result_list)
         pass
 
     def button_SelectFullName(self):
+        self.SelectFullName.setWindowModality(Qt.ApplicationModal)
         self.SelectFullName.show()
         self.SelectFullName.last_name = self.lineEdit_LastName.text()
         pass
@@ -181,8 +173,12 @@ class Main(QMainWindow, ui.Ui_MainWindow):
     # level_1/level_2: element 5 for 5 level
     #
     def GradeCalculate(self, type_index, level_1, level_2):
-        grade_list = [[90, 60, 50, 50, 80, "天", "人"], [60, 90, 65, 65, 70, "人", "地"], [60, 80, 55, 45, 75, "人", "外"], \
-        [65, 75, 45, 45, 70, "地", "外"], [65, 90, 55, 30, 80, "人", "總"], [80, 70, 40, 55, 70, "地", "總"]]
+        grade_list = [[90, 60, 50, 50, 80, "天", "人"], \
+                      [60, 90, 65, 65, 70, "人", "地"], \
+                      [60, 80, 55, 45, 75, "人", "外"], \
+                      [65, 75, 45, 45, 70, "地", "外"], \
+                      [65, 90, 55, 30, 80, "人", "總"], \
+                      [80, 70, 40, 55, 70, "地", "總"]]
     
         grade = grade_list[type_index][4]
         grade_string = grade_list[type_index][5] + grade_list[type_index][6] + "和"
@@ -200,7 +196,6 @@ class Main(QMainWindow, ui.Ui_MainWindow):
             grade_string = grade_list[type_index][6] + "剋" + grade_list[type_index][5]
 
         return grade, grade_string
-
     
     def FiveLevel_GetNameCount(self):
         last_name_count = self.spinBox_LastNameCount.value()
@@ -223,9 +218,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
                 [3, ground_element, appearance_element], [4, person_element, total_element], [5, ground_element, total_element]]
 
                 is_hit = True
-                # result_string = ""
                 grade_string = ""
-                grade_total = 0
                 grade_list = []
                 for compare_item in compare_list:
                     grade, grade_string = self.GradeCalculate(compare_item[0], compare_item[1], compare_item[2])
@@ -233,23 +226,17 @@ class Main(QMainWindow, ui.Ui_MainWindow):
                     if grade < self.spinBox_FiveLevel_Threshold.value():
                         is_hit = False
                         break
-                    grade_total = grade_total + grade
                     
                     grade_list.append([grade, grade_string])
                 if is_hit == False:
                     continue
 
                 five_level_result_list.append([[last_name_count, name1_count, name2_count], grade_list])
-                    
-                # print("[12, " + str(name1) + ", " + str(name2) + "]: " + str (grade_total) + "\n" + result_string)
-                # print("[12, " + str(name1) + ", " + str(name2) + "]: " + str (grade_total))
 
                 pass        
         
             pass    
         return five_level_result_list
-    
-    
     
     def NameCountSort(self, name_count_list):
         name_count_collect = []
@@ -260,18 +247,6 @@ class Main(QMainWindow, ui.Ui_MainWindow):
             if item[2] not in name_count_collect:
                 name_count_collect.append(item[2])
         return sorted(name_count_collect)
-
-    def RemoveNameCountItem(self, index):
-        # print("Main - remove = ", index)
-        self.textEdit_Log.append(datetime.datetime.now().strftime("----- %Y/%m/%d %H:%M:%S -----"))
-        self.textEdit_Log.append("刪除筆劃：\n"+self.name_count_result_list[index][0]+";"+str(self.name_count_result_list[index][1]))
-        self.name_count_result_list.pop(index)
-        self.textEdit_Log.append("整理筆劃如下：")
-        name_count_list = [x[1] for x in self.name_count_result_list]
-        self.textEdit_Log.append(str(self.NameCountSort(name_count_list)) + "\n")
-        
-        pass
-
 
 ###################################################
 #                   Main function

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>662</width>
-    <height>516</height>
+    <height>348</height>
    </rect>
   </property>
   <property name="font">
@@ -22,10 +22,10 @@
    <widget class="QTextEdit" name="textEdit_Log">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>400</x>
       <y>10</y>
-      <width>321</width>
-      <height>391</height>
+      <width>251</width>
+      <height>321</height>
      </rect>
     </property>
    </widget>
@@ -34,8 +34,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>311</width>
-      <height>391</height>
+      <width>381</width>
+      <height>241</height>
      </rect>
     </property>
     <property name="title">
@@ -68,10 +68,10 @@
     <widget class="QCheckBox" name="checkBox_HalfLuck">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>100</x>
        <y>200</y>
        <width>61</width>
-       <height>31</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="text">
@@ -165,10 +165,10 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>170</x>
        <y>200</y>
-       <width>61</width>
-       <height>31</height>
+       <width>41</width>
+       <height>41</height>
       </rect>
      </property>
      <property name="text">
@@ -239,7 +239,7 @@
     <widget class="QRadioButton" name="radioButton_Gender_Boy">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>220</x>
        <y>30</y>
        <width>75</width>
        <height>16</height>
@@ -252,7 +252,7 @@
     <widget class="QRadioButton" name="radioButton_Gender_Girl">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>220</x>
        <y>60</y>
        <width>75</width>
        <height>16</height>
@@ -301,13 +301,31 @@
       <number>70</number>
      </property>
     </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>200</y>
+       <width>81</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>筆劃總合</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QPushButton" name="pushButton_SelectFullName">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>410</y>
-      <width>171</width>
+      <x>270</x>
+      <y>260</y>
+      <width>120</width>
       <height>71</height>
      </rect>
     </property>
@@ -318,9 +336,9 @@
    <widget class="QPushButton" name="pushButton_SelectNameWord">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>410</y>
-      <width>161</width>
+      <x>140</x>
+      <y>260</y>
+      <width>120</width>
       <height>71</height>
      </rect>
     </property>
@@ -332,8 +350,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>410</y>
-      <width>171</width>
+      <y>260</y>
+      <width>120</width>
       <height>71</height>
      </rect>
     </property>
@@ -342,7 +360,6 @@
     </property>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

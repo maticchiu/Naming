@@ -12,8 +12,6 @@ import SelectWord_ui as ui
 
 import Settings
 
-# NAME_WORDS_PATH = "./Data/NameWords.txt"
-# SELECTED_WORD_PATH = "./Data/SelectedWords.txt"
 
 class Main(QWidget):
     
@@ -46,7 +44,6 @@ class Main(QWidget):
         # File Read
         #
         fNameWords = open(Settings.NAME_WORDS_PATH, 'r', encoding="utf-8")
-        # fNameWords = open(NAME_WORDS_PATH, 'r', encoding="utf-8")
         for line_word in fNameWords:
             line_temp = line_word.split(")")
             if len(line_temp) == 1:
@@ -84,8 +81,7 @@ class Main(QWidget):
 
         self.ui.comboBox_NameCount.clear()
         name_count_list = [x[0] for x in self.name_count_result_list]
-        name_count_list_int = self.NameCountSort(name_count_list)
-        name_count_list_str = [str(x) for x in name_count_list_int]
+        name_count_list_str = [str(x) for x in self.NameCountSort(name_count_list)]
         self.ui.comboBox_NameCount.addItems(name_count_list_str)
 
         event.accept()
@@ -133,8 +129,6 @@ class Main(QWidget):
         name_count = int(self.ui.comboBox_NameCount.currentText())
 
         self.ui.listWidget_WordList.clear()
-        
-        print("name_count = ", name_count)
         
         for element_index in range(5):
             if self.checkbox_element[element_index].isChecked():

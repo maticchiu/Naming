@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form_NameCountResult(object):
     def setupUi(self, Form_NameCountResult):
         Form_NameCountResult.setObjectName("Form_NameCountResult")
-        Form_NameCountResult.resize(726, 519)
+        Form_NameCountResult.resize(609, 519)
         font = QtGui.QFont()
         font.setPointSize(9)
         Form_NameCountResult.setFont(font)
@@ -21,10 +21,10 @@ class Ui_Form_NameCountResult(object):
         self.textEdit_NameCountDescription.setGeometry(QtCore.QRect(10, 10, 441, 501))
         self.textEdit_NameCountDescription.setObjectName("textEdit_NameCountDescription")
         self.listWidget_NameCount = QtWidgets.QListWidget(Form_NameCountResult)
-        self.listWidget_NameCount.setGeometry(QtCore.QRect(466, 10, 256, 441))
+        self.listWidget_NameCount.setGeometry(QtCore.QRect(470, 10, 131, 441))
         self.listWidget_NameCount.setObjectName("listWidget_NameCount")
         self.pushButton_Remove = QtWidgets.QPushButton(Form_NameCountResult)
-        self.pushButton_Remove.setGeometry(QtCore.QRect(630, 460, 91, 51))
+        self.pushButton_Remove.setGeometry(QtCore.QRect(470, 460, 131, 51))
         self.pushButton_Remove.setObjectName("pushButton_Remove")
 
         self.retranslateUi(Form_NameCountResult)

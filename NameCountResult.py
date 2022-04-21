@@ -89,12 +89,17 @@ class Main(QWidget):
         for item in show_name_count_list:
             item1_string = ""
             five_level_grade = 0
+            count = 0
             for x in item[1]:
-                item1_string = item1_string + str(x) + "\n"
+                item1_string = item1_string + str(x) + "\t"
+                if count == 2 or count == 5:
+                    item1_string = item1_string + "\n"
                 five_level_grade = five_level_grade + x[0]
+                count = count + 1
             description_string = str(item[0]) + ": " + str(five_level_grade) + "\n" + item1_string + str(item[2]) + "\n"
             self.ui.textEdit_NameCountDescription.append(description_string)
 
+        self.ui.textEdit_NameCountDescription.verticalScrollBar().setValue(0);
         
         pass
         
