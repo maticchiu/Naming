@@ -65,7 +65,7 @@ class Main(QWidget):
         pass
 
     def listWidget_NameCount_SelectionChanged(self):
-        name_count_list = eval(self.ui.listWidget_NameCount.currentItem().text().split(";")[1])
+        name_count_list = eval(self.ui.listWidget_NameCount.currentItem().text())
         # print("name_count_list = ", name_count_list)
         
         self.ui.listWidget_Name1.clear()
@@ -95,7 +95,8 @@ class Main(QWidget):
             self.ui.listWidget_NameCount.clear()
             fNameCountResult = open(Settings.NAME_COUNT_RESULT_PATH, 'r', encoding="utf-8")
             for line_word in fNameCountResult:
-                self.ui.listWidget_NameCount.addItem(line_word[:-1])
+                result_list = eval(line_word)
+                self.ui.listWidget_NameCount.addItem(str(result_list[0]))
                 pass
             fNameCountResult.close()
         else:

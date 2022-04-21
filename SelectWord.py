@@ -40,6 +40,7 @@ class Main(QWidget):
         self.ui.listWidget_WordList.itemDoubleClicked.connect(self.listWidget_WordList_DoubleClicked)
         self.ui.listWidget_SelectedWord.itemDoubleClicked.connect(self.listWidget_SelectedWord_DoubleClicked)
 
+        self.ui.comboBox_NameCount.currentTextChanged.connect(self.comboBox_NameCount_TextChanged)
 
         #
         # File Read
@@ -67,22 +68,25 @@ class Main(QWidget):
 
         pass
 
+    def comboBox_NameCount_TextChanged(self):
+        self.ui.pushButton_ListWord.click()
+
     def showEvent(self, event):
-        name_count_list = []
+        self.name_count_result_list = []
         if os.path.isfile(Settings.NAME_COUNT_RESULT_PATH):
             fNameCountResult = open(Settings.NAME_COUNT_RESULT_PATH, 'r', encoding="utf-8")
             for line_word in fNameCountResult:
-                name_count_list.append(eval(line_word.split(";")[1]))
+                self.name_count_result_list.append(eval(line_word))
                 pass
             fNameCountResult.close()
         else:
             print("File Not Exist: ", Settings.NAME_COUNT_RESULT_PATH)
 
         self.ui.comboBox_NameCount.clear()
+        name_count_list = [x[0] for x in self.name_count_result_list]
         name_count_list_int = self.NameCountSort(name_count_list)
         name_count_list_str = [str(x) for x in name_count_list_int]
         self.ui.comboBox_NameCount.addItems(name_count_list_str)
-
 
         event.accept()
 
@@ -91,7 +95,6 @@ class Main(QWidget):
         for index in range(self.ui.listWidget_SelectedWord.count()):
             fSelectedWord.write(self.ui.listWidget_SelectedWord.item(index).text() + "\n")
         fSelectedWord.close()
-        
         
         event.accept() # let the window close
 

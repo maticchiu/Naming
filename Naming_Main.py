@@ -24,8 +24,8 @@ import Settings
 # 天 sky
 # 地 ground
 # 人 person
-# 總 destiny
-# 外 fate
+# 總 total
+# 外 appearance
 
 # 金 gold
 # 木 wood
@@ -35,11 +35,6 @@ import Settings
 
 aiElement5 = [4, 1, 0, 2, 3]
 strElement5 = ["金", "木", "水", "火", "土"]
-
-
-# NAME_COUNT_DESCRIPTION_PATH = "./Data/NameCountDescription.txt"
-# self.checkbox_type5 = None
-# self.name_count_description = None
 
 
 ###################################################
@@ -56,9 +51,8 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         # Parameters
         #
         Settings.init()                         # Global parameter initialization
-        self.name_count_description = None      # to save description from text file
+        self.name_count_description = []        # to save description from text file
         self.name_count_result_list = []        # [[element5, name count, name count description], ...]
-        self.checkbox_type5 = [[self.checkBox_Sky_Gold, self.checkBox_Sky_Wood, self.checkBox_Sky_Water, self.checkBox_Sky_Fire, self.checkBox_Sky_Earth], [self.checkBox_Ground_Gold, self.checkBox_Ground_Wood, self.checkBox_Ground_Water, self.checkBox_Ground_Fire, self.checkBox_Ground_Earth], [self.checkBox_Person_Gold, self.checkBox_Person_Wood, self.checkBox_Person_Water, self.checkBox_Person_Fire, self.checkBox_Person_Earth], [self.checkBox_Destiny_Gold, self.checkBox_Destiny_Wood, self.checkBox_Destiny_Water, self.checkBox_Destiny_Fire, self.checkBox_Destiny_Earth], [self.checkBox_Fate_Gold, self.checkBox_Fate_Wood, self.checkBox_Fate_Water, self.checkBox_Fate_Fire, self.checkBox_Fate_Earth]]
         self.last_name_count_list = []
 
         #
@@ -87,12 +81,13 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         # File Read
         #
         fNameCountDescription = open(Settings.NAME_COUNT_DESCRIPTION_PATH, 'r', encoding="utf-8")
-        self.name_count_description = fNameCountDescription.readlines()
+        for line in fNameCountDescription:
+            self.name_count_description.append(line[:-1])   # Ignore '\n'
         fNameCountDescription.close()
 
         fLastNameCount = open(Settings.LAST_NAME_COUNT_PATH, 'r', encoding="utf-8")
         for line in fLastNameCount:
-            self.last_name_count_list.append(line[:-1]) # Ignore '\n'
+            self.last_name_count_list.append(line[:-1])     # Ignore '\n'
         fLastNameCount.close()
 
     #
@@ -117,110 +112,45 @@ class Main(QMainWindow, ui.Ui_MainWindow):
 
     def button_GetNameCount(self):
     
-        hit_count = 0
-        hit_count_list = []
-        element5_chinese = ["金", "木", "水", "火", "土"]
-        result_description = ""
-        self.name_count_result_list = []
+        # element5_chinese = ["金", "木", "水", "火", "土"]
+        five_level_name_count_list = []
+        self.name_count_result_list = []    # item = [[last_name_count, name1_count, name2_count], grade_list[grade, grade_string], name_count_description]
         
-        name_count_list = []
+        # name_count_list = []
     
-        for name1_count in range(self.spinBox_NameCount_Min.value(), self.spinBox_NameCount_Max.value()+1):
-            for name2_count in range(self.spinBox_NameCount_Min.value(), self.spinBox_NameCount_Max.value()+1):
-                for sky_index in range(5):
-                    if self.checkbox_type5[0][sky_index].isChecked() == False:
-                        continue
-                    name_count = self.spinBox_LastNameCount.value() + 1
-                    name_count = ((name_count % 10) + 1) // 2 % 5
-                
-                    if aiElement5[sky_index] != name_count:
-                        continue
-                    # print("sky_index = ", sky_index)
-                    for ground_index in range(5):
-                        # print("ground_index = ", ground_index)
-                        if self.checkbox_type5[1][ground_index].isChecked() == False:
-                            continue
-                        name_count = name1_count + name2_count
-                        name_count = ((name_count % 10) + 1) // 2 % 5
-                    
-                        if aiElement5[ground_index] != name_count:
-                            continue
-                        # print("ground_index = ", ground_index)
-                        for person_index in range(5):
-                            
-                            if self.checkbox_type5[2][person_index].isChecked() == False:
-                                continue
-                            name_count = self.spinBox_LastNameCount.value() + name1_count
-                            name_count = ((name_count % 10) + 1) // 2 % 5
-                        
-                            if aiElement5[person_index] != name_count:
-                                continue                        
-                            # print("person_index = ", person_index)
-                            for destiny_index in range(5):
-                            
-                                if self.checkbox_type5[3][destiny_index].isChecked() == False:
-                                    continue
-                                name_count = self.spinBox_LastNameCount.value() + name1_count + name2_count
-                                name_count = ((name_count % 10) + 1) // 2 % 5
-                            
-                                if aiElement5[destiny_index] != name_count:
-                                    continue
-                                # print("destiny_index = ", destiny_index)
-                                for fate_index in range(5):
-                                    
-                                    if self.checkbox_type5[4][fate_index].isChecked() == False:
-                                        continue
-                                        
-                                    name_count = name2_count + 1
-                                    name_count = ((name_count % 10) + 1) // 2 % 5
-                                    # print("fate_index1 = ", fate_index)
-                                    if aiElement5[fate_index] != name_count:
-                                        # print("aiElement5[fate_index] = ", aiElement5[fate_index], "name_count = ", name_count)
-                                        continue                                
-                            
-                                    # print("fate_index = ", fate_index)
-                            
-                                    name_count = self.spinBox_LastNameCount.value() + name1_count + name2_count
-                                    if "（凶）" in self.name_count_description[name_count - 1] or "（半凶）" in self.name_count_description[name_count - 1]:
-                                        continue
-                                    if self.radioButton_Gender_Girl.isChecked() and "女性不宜此數" in self.name_count_description[name_count - 1]:
-                                        continue
-                                        
-                                    if (self.checkBox_HalfLuck.isChecked() == True and "（半吉）" in self.name_count_description[name_count - 1]) or "（吉）" in self.name_count_description[name_count - 1]:
-                                        if len(name_count_list) == 0 or (len(name_count_list) != 0 and name_count_list[-1] != [self.spinBox_LastNameCount.value(), name1_count, name2_count]):
-                                            hit_count = hit_count + 1
-                                            name_count_list.append([self.spinBox_LastNameCount.value(), name1_count, name2_count])
-                                            if name1_count not in hit_count_list:
-                                                hit_count_list.append(name1_count)
-                                            if name2_count not in hit_count_list:
-                                                hit_count_list.append(name2_count)
-                                                
-                                            element5_string = "[" + element5_chinese[sky_index] + ", " + element5_chinese[ground_index] + ", " + element5_chinese[person_index] + ", " + element5_chinese[destiny_index] + ", " + element5_chinese[fate_index] + "]"
-                                            self.name_count_result_list.append([element5_string, name_count_list[-1], self.name_count_description[name_count - 1]])
+        #
+        # Get name count list according to five level
+        #
+        five_level_name_count_list = self.FiveLevel_GetNameCount()
+    
+        #
+        #Filter name count list via NameCountDescription
+        #
+        five_level_name_count_list = self.NameCoutDescription_FilterNameCountList(five_level_name_count_list)
 
-                                        pass
-                                            
-                                    pass                             
-                                pass                         
-                            pass                     
-                        pass                
-                    pass
-                pass        
-        
-            pass
-    
-        print("hit_count = ", hit_count)
+        self.name_count_result_list = [[x[0], x[1], self.name_count_description[x[0][0] + x[0][1] + x[0][2] - 1]] for x in five_level_name_count_list]
+
+
+        name_count_list = [x[0] for x in self.name_count_result_list]
+
+        print("len(five_level_name_count_list) = ", len(five_level_name_count_list))
         print("name_count_list = ", name_count_list)
+        print("self.name_count_result_list = ", self.name_count_result_list)
         
         self.textEdit_Log.append(datetime.datetime.now().strftime("----- %Y/%m/%d %H:%M:%S -----"))
-        self.textEdit_Log.append("共" + str(len(name_count_list)) + "組筆劃組合")
+        self.textEdit_Log.append("共" + str(len(self.name_count_result_list)) + "組筆劃組合")
         self.textEdit_Log.append(str(name_count_list))
         self.textEdit_Log.append("整理筆劃如下：")
         self.textEdit_Log.append(str(self.NameCountSort(name_count_list)) + "\n")
+
+        fNameCountResult = open(Settings.NAME_COUNT_RESULT_PATH, 'w', encoding="utf-8")
+        for item in self.name_count_result_list:
+            fNameCountResult.write(str(item) + "\n")
+        fNameCountResult.close()
     
         
         self.NameCountResult.show()
-        self.NameCountResult.ShowNameCount(self.name_count_result_list)
+        # self.NameCountResult.ShowNameCount(self.name_count_result_list)
         pass
 
     def button_SelectFullName(self):
@@ -231,6 +161,96 @@ class Main(QMainWindow, ui.Ui_MainWindow):
     #
     #   FUNCTION IMPLEMENT
     #
+    def NameCoutDescription_FilterNameCountList(self, name_count_list):
+        name_count_filtered_list = name_count_list.copy()
+        for name_count_item in name_count_list:
+            name_count = name_count_item[0][0] + name_count_item[0][1] + name_count_item[0][2]
+            if "（凶）" in self.name_count_description[name_count - 1]:
+                name_count_filtered_list.remove(name_count_item)
+                continue
+            if self.radioButton_Gender_Girl.isChecked() and "女性不宜此數" in self.name_count_description[name_count - 1]:
+                name_count_filtered_list.remove(name_count_item)
+                continue
+            if (self.checkBox_HalfLuck.isChecked() == False and "（半吉）" in self.name_count_description[name_count - 1]):
+                name_count_filtered_list.remove(name_count_item)
+                continue
+        return name_count_filtered_list
+    
+    #
+    # type_index: 0: 天/人; 1: 人/地; 2: 人/外; 3: 地/外; 4: 人/總; 5: 地/總
+    # level_1/level_2: element 5 for 5 level
+    #
+    def GradeCalculate(self, type_index, level_1, level_2):
+        grade_list = [[90, 60, 50, 50, 80, "天", "人"], [60, 90, 65, 65, 70, "人", "地"], [60, 80, 55, 45, 75, "人", "外"], \
+        [65, 75, 45, 45, 70, "地", "外"], [65, 90, 55, 30, 80, "人", "總"], [80, 70, 40, 55, 70, "地", "總"]]
+    
+        grade = grade_list[type_index][4]
+        grade_string = grade_list[type_index][5] + grade_list[type_index][6] + "和"
+        if (level_1 + 1) % 5 == level_2:
+            grade = grade_list[type_index][0]
+            grade_string = grade_list[type_index][5] + "生" + grade_list[type_index][6]
+        elif (level_2 + 1) % 5 == level_1:
+            grade = grade_list[type_index][1]
+            grade_string = grade_list[type_index][6] + "生" + grade_list[type_index][5]
+        elif (level_1 + 2) % 5 == level_2:
+            grade = grade_list[type_index][2]
+            grade_string = grade_list[type_index][5] + "剋" + grade_list[type_index][6]
+        elif (level_2 + 2) % 5 == level_1:
+            grade = grade_list[type_index][3]
+            grade_string = grade_list[type_index][6] + "剋" + grade_list[type_index][5]
+
+        return grade, grade_string
+
+    
+    def FiveLevel_GetNameCount(self):
+        last_name_count = self.spinBox_LastNameCount.value()
+        five_level_result_list = []
+        for name1_count in range(self.spinBox_NameCount_Min.value(), self.spinBox_NameCount_Max.value()+1):
+            for name2_count in range(self.spinBox_NameCount_Min.value(), self.spinBox_NameCount_Max.value()+1):
+                sky_count = last_name_count
+                person_count = last_name_count + name1_count
+                ground_count = name1_count + name2_count
+                appearance_count = name2_count + 1
+                total_count = last_name_count + name1_count + name2_count
+                
+                sky_element = (sky_count % 10) + 1 // 2 % 5
+                person_element = (person_count % 10) + 1 // 2 % 5
+                ground_element = (ground_count % 10) + 1 // 2 % 5
+                appearance_element = (appearance_count % 10) + 1 // 2 % 5
+                total_element = (total_count % 10) + 1 // 2 % 5
+
+                compare_list = [[0, sky_element, person_element], [1, person_element, ground_element], [2, person_element, appearance_element], \
+                [3, ground_element, appearance_element], [4, person_element, total_element], [5, ground_element, total_element]]
+
+                is_hit = True
+                # result_string = ""
+                grade_string = ""
+                grade_total = 0
+                grade_list = []
+                for compare_item in compare_list:
+                    grade, grade_string = self.GradeCalculate(compare_item[0], compare_item[1], compare_item[2])
+
+                    if grade < self.spinBox_FiveLevel_Threshold.value():
+                        is_hit = False
+                        break
+                    grade_total = grade_total + grade
+                    
+                    grade_list.append([grade, grade_string])
+                if is_hit == False:
+                    continue
+
+                five_level_result_list.append([[last_name_count, name1_count, name2_count], grade_list])
+                    
+                # print("[12, " + str(name1) + ", " + str(name2) + "]: " + str (grade_total) + "\n" + result_string)
+                # print("[12, " + str(name1) + ", " + str(name2) + "]: " + str (grade_total))
+
+                pass        
+        
+            pass    
+        return five_level_result_list
+    
+    
+    
     def NameCountSort(self, name_count_list):
         name_count_collect = []
         
