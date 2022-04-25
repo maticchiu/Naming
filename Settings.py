@@ -11,8 +11,8 @@ def init():
     
     global USER_PATH
     USER_PATH = "./User/"
-    global NAME_COUNT_RESULT_PATH
-    NAME_COUNT_RESULT_PATH = USER_PATH + "NameCountResult.txt"
+    global SELECTED_NAME_COUNT_PATH
+    SELECTED_NAME_COUNT_PATH = USER_PATH + "SelectedNameCount.txt"
     global SELECTED_WORD_PATH
     SELECTED_WORD_PATH = USER_PATH + "SelectedWords.txt"
     global FULL_NAME_PATH

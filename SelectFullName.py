@@ -42,10 +42,16 @@ class Main(QWidget):
         pass
 
     def button_RandomName(self):
-        while True:
+        retry_count = 0
+        while retry_count < 100:
+            retry_count = retry_count + 1
             self.ui.listWidget_NameCount.setCurrentRow(random.randrange(self.ui.listWidget_NameCount.count()))
             if self.ui.listWidget_Name1.count() and self.ui.listWidget_Name2.count():
                 break
+        if retry_count == 100:
+            self.ui.listWidget_NameCount.setCurrentRow(-1)
+            self.ui.lineEdit_RandomName.setText("404")
+            return
         self.ui.listWidget_Name1.setCurrentRow(random.randrange(self.ui.listWidget_Name1.count()))
         self.ui.listWidget_Name2.setCurrentRow(random.randrange(self.ui.listWidget_Name2.count()))
         
@@ -65,6 +71,12 @@ class Main(QWidget):
         pass
 
     def listWidget_NameCount_SelectionChanged(self):
+    
+        if self.ui.listWidget_NameCount.currentRow() == -1:
+            self.ui.listWidget_Name1.clear()
+            self.ui.listWidget_Name2.clear()
+            return
+    
         name_count_list = eval(self.ui.listWidget_NameCount.currentItem().text())
         # print("name_count_list = ", name_count_list)
         
@@ -91,16 +103,16 @@ class Main(QWidget):
         else:
             print("File Not Exist: ", Settings.SELECTED_WORD_PATH)
 
-        if os.path.isfile(Settings.NAME_COUNT_RESULT_PATH):
+        if os.path.isfile(Settings.SELECTED_NAME_COUNT_PATH):
             self.ui.listWidget_NameCount.clear()
-            fNameCountResult = open(Settings.NAME_COUNT_RESULT_PATH, 'r', encoding="utf-8")
+            fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
             for line_word in fNameCountResult:
                 result_list = eval(line_word)
                 self.ui.listWidget_NameCount.addItem(str(result_list[0]))
                 pass
             fNameCountResult.close()
         else:
-            print("File Not Exist: ", Settings.NAME_COUNT_RESULT_PATH)
+            print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
 
         if os.path.isfile(Settings.FULL_NAME_PATH):
             self.ui.listWidget_FullName.clear()

@@ -49,7 +49,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         #
         Settings.init()                         # Global parameter initialization
         self.name_count_description = []        # to save description from text file
-        self.name_count_result_list = []        # [[element5, name count, name count description], ...]
+        # suggest_name_count_list = []        
         self.last_name_count_list = []
 
         #
@@ -108,7 +108,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
     def button_GetNameCount(self):
     
         five_level_name_count_list = []
-        self.name_count_result_list = []    # item = [[last_name_count, name1_count, name2_count], grade_list[grade, grade_string], name_count_description]
+        suggest_name_count_list = []    # item = [[last_name_count, name1_count, name2_count], grade_list[grade, grade_string], name_count_description]
     
         #
         # Get name count list according to five level
@@ -120,26 +120,27 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         #
         five_level_name_count_list = self.NameCoutDescription_FilterNameCountList(five_level_name_count_list)
 
-        self.name_count_result_list = [[x[0], x[1], self.name_count_description[x[0][0] + x[0][1] + x[0][2] - 1]] for x in five_level_name_count_list]
+        suggest_name_count_list = [[x[0], x[1], self.name_count_description[x[0][0] + x[0][1] + x[0][2] - 1]] for x in five_level_name_count_list]
 
 
-        name_count_list = [x[0] for x in self.name_count_result_list]
+        name_count_list = [x[0] for x in suggest_name_count_list]
 
         print("len(five_level_name_count_list) = ", len(five_level_name_count_list))
         print("name_count_list = ", name_count_list)
-        print("self.name_count_result_list = ", self.name_count_result_list)
+        print("suggest_name_count_list = ", suggest_name_count_list)
         
         self.textEdit_Log.append(datetime.datetime.now().strftime("----- %Y/%m/%d %H:%M:%S -----"))
-        self.textEdit_Log.append("共" + str(len(self.name_count_result_list)) + "組筆劃組合")
+        self.textEdit_Log.append("共" + str(len(suggest_name_count_list)) + "組筆劃組合")
         self.textEdit_Log.append(str(name_count_list))
         self.textEdit_Log.append("整理筆劃如下：")
         self.textEdit_Log.append(str(self.NameCountSort(name_count_list)) + "\n")
 
-        fNameCountResult = open(Settings.NAME_COUNT_RESULT_PATH, 'w', encoding="utf-8")
-        for item in self.name_count_result_list:
-            fNameCountResult.write(str(item) + "\n")
-        fNameCountResult.close()
+        # fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'w', encoding="utf-8")
+        # for item in suggest_name_count_list:
+            # fNameCountResult.write(str(item) + "\n")
+        # fNameCountResult.close()
     
+        self.NameCountResult.SetSuggestNameCount(suggest_name_count_list)
         self.NameCountResult.setWindowModality(Qt.ApplicationModal)
         self.NameCountResult.show()
         pass

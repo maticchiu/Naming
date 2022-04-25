@@ -182,6 +182,9 @@
      </property>
     </widget>
     <widget class="QSpinBox" name="spinBox_LastNameCount">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -218,6 +221,9 @@
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_LastName">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>60</x>
@@ -270,7 +276,7 @@
       <rect>
        <x>20</x>
        <y>90</y>
-       <width>131</width>
+       <width>191</width>
        <height>41</height>
       </rect>
      </property>
@@ -280,13 +286,13 @@
       </font>
      </property>
      <property name="text">
-      <string>五格 - 門檻值設定</string>
+      <string>五格 - 門檻值設定 (60或70)</string>
      </property>
     </widget>
     <widget class="QSpinBox" name="spinBox_FiveLevel_Threshold">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>220</x>
        <y>90</y>
        <width>51</width>
        <height>41</height>

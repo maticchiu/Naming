@@ -70,14 +70,14 @@ class Main(QWidget):
 
     def showEvent(self, event):
         self.name_count_result_list = []
-        if os.path.isfile(Settings.NAME_COUNT_RESULT_PATH):
-            fNameCountResult = open(Settings.NAME_COUNT_RESULT_PATH, 'r', encoding="utf-8")
+        if os.path.isfile(Settings.SELECTED_NAME_COUNT_PATH):
+            fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
             for line_word in fNameCountResult:
                 self.name_count_result_list.append(eval(line_word))
                 pass
             fNameCountResult.close()
         else:
-            print("File Not Exist: ", Settings.NAME_COUNT_RESULT_PATH)
+            print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
 
         self.ui.comboBox_NameCount.clear()
         name_count_list = [x[0] for x in self.name_count_result_list]
