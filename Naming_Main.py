@@ -132,9 +132,10 @@ class Main(QMainWindow, ui.Ui_MainWindow):
     
         event.accept() # let the window close
 
-    #
-    #   COMPONENT
-    #
+    #------------------------------------------------------
+    #                   COMPONENT
+    #------------------------------------------------------
+    
     def lineEdit_LastName_TextChanged(self):
         new_last_name = self.lineEdit_LastName.text()
 
@@ -158,36 +159,24 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         five_level_name_count_list = []
         suggest_name_count_list = []    # item = [[last_name_count, name1_count, name2_count], grade_list[grade, grade_string], name_count_description]
     
-        #
         # Get name count list according to five level
-        #
         five_level_name_count_list = self.FiveLevel_GetNameCount()
     
-        #
         #Filter name count list via NameCountDescription
-        #
         five_level_name_count_list = self.NameCoutDescription_FilterNameCountList(five_level_name_count_list)
 
+        # Get name count list
         suggest_name_count_list = [[x[0], x[1], self.name_count_description[x[0][0] + x[0][1] + x[0][2] - 1]] for x in five_level_name_count_list]
-
-
         name_count_list = [x[0] for x in suggest_name_count_list]
 
-        print("len(five_level_name_count_list) = ", len(five_level_name_count_list))
-        print("name_count_list = ", name_count_list)
-        print("suggest_name_count_list = ", suggest_name_count_list)
-        
+        # Show name count list on textEdit_Log
         self.textEdit_Log.append(datetime.datetime.now().strftime("----- %Y/%m/%d %H:%M:%S -----"))
         self.textEdit_Log.append("共" + str(len(suggest_name_count_list)) + "組筆劃組合")
         self.textEdit_Log.append(str(name_count_list))
         self.textEdit_Log.append("整理筆劃如下：")
         self.textEdit_Log.append(str(self.NameCountSort(name_count_list)) + "\n")
-
-        # fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'w', encoding="utf-8")
-        # for item in suggest_name_count_list:
-            # fNameCountResult.write(str(item) + "\n")
-        # fNameCountResult.close()
     
+        # Send name count list to NameCountResult form before showing the form
         self.NameCountResult.SetSuggestNameCount(suggest_name_count_list)
         self.NameCountResult.setWindowModality(Qt.ApplicationModal)
         self.NameCountResult.show()
@@ -199,9 +188,10 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         self.SelectFullName.last_name = self.lineEdit_LastName.text()
         pass
 
-    #
-    #   FUNCTION IMPLEMENT
-    #
+    #------------------------------------------------------
+    #               FUNCTION IMPLEMENT
+    #------------------------------------------------------
+    
     def NameCoutDescription_FilterNameCountList(self, name_count_list):
         name_count_filtered_list = name_count_list.copy()
         for name_count_item in name_count_list:
@@ -217,7 +207,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
                 continue
         return name_count_filtered_list
     
-    #
+    ##
     # type_index: 0: 天/人; 1: 人/地; 2: 人/外; 3: 地/外; 4: 人/總; 5: 地/總
     # level_1/level_2: element 5 for 5 level
     #

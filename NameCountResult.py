@@ -21,9 +21,15 @@ class Main(QWidget):
         self.ui = ui.Ui_Form_NameCountResult()
         self.ui.setupUi(self)
 
+        #
+        # Parameters
+        #
         self.suggest_name_count_list = []
         self.selected_name_count_list = []
 
+        #
+        # Connect
+        #
         self.ui.listWidget_SelectedNameCount.itemSelectionChanged.connect(self.listWidget_SelectedNameCount_SelectionChanged)
         self.ui.listWidget_SuggestNameCount.itemSelectionChanged.connect(self.listWidget_SuggestNameCount_SelectionChanged)
 
@@ -35,6 +41,39 @@ class Main(QWidget):
 
         pass
 
+    def showEvent(self, event):
+        # Read selected name count list
+        self.selected_name_count_list = []
+        if os.path.isfile(Settings.SELECTED_NAME_COUNT_PATH):
+            fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
+            for line_word in fNameCountResult:
+                self.selected_name_count_list.append(eval(line_word))
+                pass
+            fNameCountResult.close()
+        else:
+            print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
+
+        # Show selected name count list
+        self.ui.listWidget_SelectedNameCount.clear()
+        name_count_list = [x[0] for x in self.selected_name_count_list]
+        name_count_list_string = [str(x) for x in name_count_list]
+        self.ui.listWidget_SelectedNameCount.addItems(name_count_list_string)
+
+        event.accept()
+        
+    def closeEvent(self, event):
+        # Save selected name count list
+        fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'w', encoding="utf-8")
+        self.selected_name_count_list.sort()
+        for item in self.selected_name_count_list:
+            fNameCountResult.write(str(item) + "\n")
+        fNameCountResult.close()
+    
+        event.accept() # let the window close
+
+    #------------------------------------------------------
+    #               COMPONENT
+    #------------------------------------------------------
     def pushButton_Add_Clicked(self):
         add_item_text = self.ui.listWidget_SuggestNameCount.currentItem().text()
         
@@ -44,7 +83,6 @@ class Main(QWidget):
 
             add_list_item = self.suggest_name_count_list[self.ui.listWidget_SuggestNameCount.currentRow()]
             self.selected_name_count_list.append(add_list_item)
-
 
     def pushButton_Remove_Clicked(self):
         selected_item_index = self.ui.listWidget_SelectedNameCount.currentRow()
@@ -66,35 +104,11 @@ class Main(QWidget):
     def listWidget_SuggestNameCount_DoubleClicked(self):
         self.ShowSuggestNameCount(-1)
 
-    def showEvent(self, event):
-        self.selected_name_count_list = []
-        if os.path.isfile(Settings.SELECTED_NAME_COUNT_PATH):
-            fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
-            for line_word in fNameCountResult:
-                self.selected_name_count_list.append(eval(line_word))
-                pass
-            fNameCountResult.close()
-        else:
-            print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
+    #------------------------------------------------------
+    #               FUNCTION IMPLEMENT
+    #------------------------------------------------------
 
-        self.ui.listWidget_SelectedNameCount.clear()
-        name_count_list = [x[0] for x in self.selected_name_count_list]
-        name_count_list_string = [str(x) for x in name_count_list]
-        self.ui.listWidget_SelectedNameCount.addItems(name_count_list_string)
-
-        event.accept()
-
-        
-    def closeEvent(self, event):
-        fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'w', encoding="utf-8")
-        self.selected_name_count_list.sort()
-        for item in self.selected_name_count_list:
-            fNameCountResult.write(str(item) + "\n")
-        fNameCountResult.close()
-    
-        event.accept() # let the window close
-
-    #
+    ##
     # suggest_name_count_list = []    # item = [[last_name_count, name1_count, name2_count], grade_list[grade, grade_string], name_count_description]
     #
     def SetSuggestNameCount(self, suggest_name_count_list):

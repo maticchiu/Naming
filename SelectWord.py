@@ -24,9 +24,7 @@ class Main(QWidget):
         # Parameters
         #
         self.name_word_array = []
-        
         self.checkbox_element = [self.ui.checkBox_SelectWord_Gold, self.ui.checkBox_SelectWord_Wood, self.ui.checkBox_SelectWord_Water, self.ui.checkBox_SelectWord_Fire, self.ui.checkBox_SelectWord_Earth]
-
 
         #
         # Connect
@@ -43,6 +41,8 @@ class Main(QWidget):
         #
         # File Read
         #
+        
+        # Load NameWord
         fNameWords = open(Settings.NAME_WORDS_PATH, 'r', encoding="utf-8")
         for line_word in fNameWords:
             line_temp = line_word.split(")")
@@ -56,9 +56,6 @@ class Main(QWidget):
         fNameWords.close()
 
         pass
-
-    def comboBox_NameCount_TextChanged(self):
-        self.ui.pushButton_ListWord.click()
 
     def showEvent(self, event):
         # Read name count result for name count
@@ -96,6 +93,9 @@ class Main(QWidget):
                 pass
             fSelectedWord.close()
 
+        # Update WordList
+        self.ui.pushButton_ListWord.click()
+
         event.accept()
 
     def closeEvent(self, event):
@@ -104,7 +104,7 @@ class Main(QWidget):
         selected_word_list = []
         for index in range(self.ui.listWidget_SelectedWord.count()):
             selected_word_list.append(self.ui.listWidget_SelectedWord.item(index).text().split("-"))
-        selected_word_list.sort(key = lambda s: int(s[1]))
+        selected_word_list.sort(key = self.SelectedWord_SortFunc)
     
         # Save selected words
         fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'w', encoding="utf-8")
@@ -120,10 +120,13 @@ class Main(QWidget):
         
         event.accept() # let the window close
 
+    #------------------------------------------------------
+    #               COMPONENT
+    #------------------------------------------------------
+    
+    def comboBox_NameCount_TextChanged(self):
+        self.ui.pushButton_ListWord.click()
 
-    #
-    #   COMPONENT
-    #
     def listWidget_WordList_DoubleClicked(self):
     
         if self.ui.listWidget_WordList.currentRow() == -1:
@@ -134,7 +137,6 @@ class Main(QWidget):
         if len(matcheditems) == 0:
             self.ui.listWidget_SelectedWord.addItem(selected_word)
         pass
-     
         
     def listWidget_SelectedWord_DoubleClicked(self):
     
@@ -163,6 +165,9 @@ class Main(QWidget):
         
         pass
 
+    #------------------------------------------------------
+    #               FUNCTION IMPLEMENT
+    #------------------------------------------------------
 
     def NameCountSort(self, name_count_list):
         name_count_collect = []
@@ -174,5 +179,10 @@ class Main(QWidget):
                 name_count_collect.append(item[2])
         return sorted(name_count_collect)
 
-        
+    def Element5_Index(self, element5_list):
+        return ["金", "木", "水", "火", "土"].index(element5_list[2])
+
+    def SelectedWord_SortFunc(self, selected_word_item):
+        return int(selected_word_item[1]) * 10 + ["金", "木", "水", "火", "土"].index(selected_word_item[2])
+
 

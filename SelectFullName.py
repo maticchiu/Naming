@@ -41,6 +41,56 @@ class Main(QWidget):
 
         pass
 
+    def showEvent(self, event):
+        self.selected_word = []
+        if os.path.isfile(Settings.SELECTED_WORD_PATH):
+            self.ui.listWidget_SelectedWord.clear()
+            fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'r', encoding="utf-8")
+            for line_word in fSelectedWord:
+                self.ui.listWidget_SelectedWord.addItem(line_word[:-1])
+                self.selected_word.append(line_word[:-1].split("-"))
+                pass
+            fSelectedWord.close()
+        else:
+            print("File Not Exist: ", Settings.SELECTED_WORD_PATH)
+
+        if os.path.isfile(Settings.SELECTED_NAME_COUNT_PATH):
+            self.ui.listWidget_NameCount.clear()
+            fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
+            for line_word in fNameCountResult:
+                result_list = eval(line_word)
+                self.ui.listWidget_NameCount.addItem(str(result_list[0]))
+                pass
+            fNameCountResult.close()
+        else:
+            print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
+
+        if os.path.isfile(Settings.FULL_NAME_PATH):
+            self.ui.listWidget_FullName.clear()
+            fFullName = open(Settings.FULL_NAME_PATH, 'r', encoding="utf-8")
+            for line_word in fFullName:
+                self.ui.listWidget_FullName.addItem(line_word[:-1])     # ignore '\n'
+                pass
+            fFullName.close()
+        else:
+            print("File Not Exist: ", Settings.FULL_NAME_PATH)
+
+
+        event.accept()
+
+    def closeEvent(self, event):
+        fFullName = open(Settings.FULL_NAME_PATH, 'w', encoding="utf-8")
+        for index in range(self.ui.listWidget_FullName.count()):
+            fFullName.write(self.ui.listWidget_FullName.item(index).text() + "\n")
+        fFullName.close()
+
+        
+        event.accept() # let the window close
+
+    #------------------------------------------------------
+    #               COMPONENT
+    #------------------------------------------------------
+    
     def button_RandomName(self):
         retry_count = 0
         while retry_count < 100:
@@ -89,53 +139,6 @@ class Main(QWidget):
                 self.ui.listWidget_Name2.addItem(word[0])
        
         pass
-
-    def showEvent(self, event):
-        self.selected_word = []
-        if os.path.isfile(Settings.SELECTED_WORD_PATH):
-            self.ui.listWidget_SelectedWord.clear()
-            fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'r', encoding="utf-8")
-            for line_word in fSelectedWord:
-                self.ui.listWidget_SelectedWord.addItem(line_word[:-1])
-                self.selected_word.append(line_word[:-1].split("-"))
-                pass
-            fSelectedWord.close()
-        else:
-            print("File Not Exist: ", Settings.SELECTED_WORD_PATH)
-
-        if os.path.isfile(Settings.SELECTED_NAME_COUNT_PATH):
-            self.ui.listWidget_NameCount.clear()
-            fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
-            for line_word in fNameCountResult:
-                result_list = eval(line_word)
-                self.ui.listWidget_NameCount.addItem(str(result_list[0]))
-                pass
-            fNameCountResult.close()
-        else:
-            print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
-
-        if os.path.isfile(Settings.FULL_NAME_PATH):
-            self.ui.listWidget_FullName.clear()
-            fFullName = open(Settings.FULL_NAME_PATH, 'r', encoding="utf-8")
-            for line_word in fFullName:
-                self.ui.listWidget_FullName.addItem(line_word[:-1])     # ignore '\n'
-                pass
-            fFullName.close()
-        else:
-            print("File Not Exist: ", Settings.FULL_NAME_PATH)
-
-
-        event.accept()
-
-    def closeEvent(self, event):
-        fFullName = open(Settings.FULL_NAME_PATH, 'w', encoding="utf-8")
-        for index in range(self.ui.listWidget_FullName.count()):
-            fFullName.write(self.ui.listWidget_FullName.item(index).text() + "\n")
-        fFullName.close()
-
-        
-        event.accept() # let the window close
-
 
     #
     #   COMPONENT
