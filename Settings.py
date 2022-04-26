@@ -11,6 +11,10 @@ def init():
     
     global USER_PATH
     USER_PATH = "./User/"
+    global MAIN_SETTING_PATH
+    MAIN_SETTING_PATH = USER_PATH + "MainSetting.txt"
+    global SELECT_WORD_SETTING_PATH
+    SELECT_WORD_SETTING_PATH = USER_PATH + "SelectWordSetting.txt"
     global SELECTED_NAME_COUNT_PATH
     SELECTED_NAME_COUNT_PATH = USER_PATH + "SelectedNameCount.txt"
     global SELECTED_WORD_PATH

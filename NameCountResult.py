@@ -87,6 +87,7 @@ class Main(QWidget):
         
     def closeEvent(self, event):
         fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'w', encoding="utf-8")
+        self.selected_name_count_list.sort()
         for item in self.selected_name_count_list:
             fNameCountResult.write(str(item) + "\n")
         fNameCountResult.close()

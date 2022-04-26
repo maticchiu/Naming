@@ -58,7 +58,7 @@ class Ui_Form_NameCountResult(object):
         self.listWidget_SelectedNameCount.setToolTip(_translate("Form_NameCountResult", "<html><head/><body><p><span style=\" font-size:12pt;\">1. Press &quot;Remove&quot; button to remove selected item</span></p><p><span style=\" font-size:12pt;\">2. Click to show single name count description</span></p><p><span style=\" font-size:12pt;\">3. Double click to show all selected name count descriptions</span></p><p><span style=\" font-size:12pt;\"><br/></span></p></body></html>"))
         self.label.setText(_translate("Form_NameCountResult", "Selected Name Count"))
         self.label_2.setText(_translate("Form_NameCountResult", "Suggest Name Count"))
-        self.listWidget_SuggestNameCount.setToolTip(_translate("Form_NameCountResult", "<html><head/><body><p><span style=\" font-size:12pt;\">1. Press &quot;Add&quot; button to add name count</span></p><p><span style=\" font-size:12pt;\">2. Click to show single name count description</span></p><p><span style=\" font-size:12pt;\">3. Double click to show all selected name count descriptions</span></p></body></html>"))
+        self.listWidget_SuggestNameCount.setToolTip(_translate("Form_NameCountResult", "<html><head/><body><p><span style=\" font-size:12pt;\">1. Press &quot;Add&quot; button to add name count</span></p><p><span style=\" font-size:12pt;\">2. Click to show single name count description</span></p><p><span style=\" font-size:12pt;\">3. Double click to show all suggest name count descriptions</span></p></body></html>"))
         self.pushButton_Add.setText(_translate("Form_NameCountResult", "Add"))
 
 

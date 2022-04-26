@@ -303,6 +303,15 @@
        <pointsize>12</pointsize>
       </font>
      </property>
+     <property name="minimum">
+      <number>60</number>
+     </property>
+     <property name="maximum">
+      <number>70</number>
+     </property>
+     <property name="singleStep">
+      <number>10</number>
+     </property>
      <property name="value">
       <number>70</number>
      </property>

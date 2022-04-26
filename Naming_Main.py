@@ -8,6 +8,7 @@ from PyQt5.QtCore import QRegExp
 
 import datetime
 import os
+import json
 
 import Naming_ui as ui
 import NameCountResult as ncr
@@ -34,6 +35,12 @@ import Settings
 # 土 earth
 
 
+DICT_KEY_GENDER = "Gender"              # Value: 0: Girl; 1: Boy
+DICT_KEY_5LEVEL_THRESHOLD = "5LvTh"     # Value: 60 or 70
+DICT_KEY_COUNT_MIN = "CountMin"         # Value: 5 ~ 20
+DICT_KEY_COUNT_MAX = "CountMax"         # Value: 5 ~ 20
+DICT_KEY_HALF_LUCK = "HalfLuck"         # Value: 0: Unchecked; 1: Checked
+
 ###################################################
 #                   Main class
 ###################################################
@@ -49,8 +56,10 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         #
         Settings.init()                         # Global parameter initialization
         self.name_count_description = []        # to save description from text file
-        # suggest_name_count_list = []        
         self.last_name_count_list = []
+        self.main_setting_list = []
+        
+        self.main_setting_dict = {}
 
         #
         # Connect
@@ -67,22 +76,61 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         self.SelectWord = sw.Main()
         self.SelectFullName = sfn.Main()
         
-        
         #
         # File
         #
         if not os.path.isdir(Settings.USER_PATH):
             os.mkdir(Settings.USER_PATH)
 
+        # Read MainSetting
+        if os.path.isfile(Settings.MAIN_SETTING_PATH):
+            fMainSetting = open(Settings.MAIN_SETTING_PATH, 'r', encoding="utf-8")
+            data = fMainSetting.read()
+            self.main_setting_dict = json.loads(data)
+            if self.main_setting_dict[DICT_KEY_GENDER] == 1:
+                self.radioButton_Gender_Boy.setChecked(True)
+            else:
+                self.radioButton_Gender_Girl.setChecked(True)
+            self.spinBox_FiveLevel_Threshold.setValue(self.main_setting_dict[DICT_KEY_5LEVEL_THRESHOLD])
+            self.spinBox_NameCount_Min.setValue(self.main_setting_dict[DICT_KEY_COUNT_MIN])
+            self.spinBox_NameCount_Max.setValue(self.main_setting_dict[DICT_KEY_COUNT_MAX])
+            self.checkBox_HalfLuck.setChecked(self.main_setting_dict[DICT_KEY_HALF_LUCK])
+            fMainSetting.close()
+
+        # Read NameCountDescription
         fNameCountDescription = open(Settings.NAME_COUNT_DESCRIPTION_PATH, 'r', encoding="utf-8")
         for line in fNameCountDescription:
             self.name_count_description.append(line[:-1])   # Ignore '\n'
         fNameCountDescription.close()
 
+        # Read LastNameCount
         fLastNameCount = open(Settings.LAST_NAME_COUNT_PATH, 'r', encoding="utf-8")
         for line in fLastNameCount:
             self.last_name_count_list.append(line[:-1])     # Ignore '\n'
         fLastNameCount.close()
+
+
+    def closeEvent(self, event):
+    
+        # Save MainSetting
+        fMainSetting = open(Settings.MAIN_SETTING_PATH, 'w', encoding="utf-8")
+        
+        if self.radioButton_Gender_Boy.isChecked() == True:
+            self.main_setting_dict[DICT_KEY_GENDER] = 1
+        else:
+            self.main_setting_dict[DICT_KEY_GENDER] = 0
+        self.main_setting_dict[DICT_KEY_5LEVEL_THRESHOLD] = self.spinBox_FiveLevel_Threshold.value()
+        self.main_setting_dict[DICT_KEY_COUNT_MIN] = self.spinBox_NameCount_Min.value()
+        self.main_setting_dict[DICT_KEY_COUNT_MAX] = self.spinBox_NameCount_Max.value()
+        if self.checkBox_HalfLuck.isChecked() == True:
+            self.main_setting_dict[DICT_KEY_HALF_LUCK] = 1
+        else: 
+            self.main_setting_dict[DICT_KEY_HALF_LUCK] = 0
+        
+        fMainSetting.write(json.dumps(self.main_setting_dict))
+        fMainSetting.close()
+    
+        event.accept() # let the window close
 
     #
     #   COMPONENT

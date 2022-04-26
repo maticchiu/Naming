@@ -55,20 +55,13 @@ class Main(QWidget):
             self.name_word_array.append(element_word)
         fNameWords.close()
 
-        if os.path.isfile(Settings.SELECTED_WORD_PATH):
-            self.ui.listWidget_SelectedWord.clear()
-            fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'r', encoding="utf-8")
-            for line_word in fSelectedWord:
-                self.ui.listWidget_SelectedWord.addItem(line_word[:-1])
-                pass
-            fSelectedWord.close()
-
         pass
 
     def comboBox_NameCount_TextChanged(self):
         self.ui.pushButton_ListWord.click()
 
     def showEvent(self, event):
+        # Read name count result for name count
         self.name_count_result_list = []
         if os.path.isfile(Settings.SELECTED_NAME_COUNT_PATH):
             fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
@@ -79,18 +72,51 @@ class Main(QWidget):
         else:
             print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
 
+        # Add name count to combobox
         self.ui.comboBox_NameCount.clear()
         name_count_list = [x[0] for x in self.name_count_result_list]
         name_count_list_str = [str(x) for x in self.NameCountSort(name_count_list)]
         self.ui.comboBox_NameCount.addItems(name_count_list_str)
 
+        # Read SelectWord setting
+        if os.path.isfile(Settings.SELECT_WORD_SETTING_PATH):
+            fSelectWordSetting = open(Settings.SELECT_WORD_SETTING_PATH, 'r', encoding="utf-8")
+            data = fSelectWordSetting.readline()
+            element5_list = eval(data)
+            for index in range(5):
+                self.checkbox_element[index].setChecked(element5_list[index])
+            fSelectWordSetting.close()
+
+        # Read selected words
+        if os.path.isfile(Settings.SELECTED_WORD_PATH):
+            self.ui.listWidget_SelectedWord.clear()
+            fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'r', encoding="utf-8")
+            for line_word in fSelectedWord:
+                self.ui.listWidget_SelectedWord.addItem(line_word[:-1])
+                pass
+            fSelectedWord.close()
+
         event.accept()
 
     def closeEvent(self, event):
-        fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'w', encoding="utf-8")
+
+        # Sort selected word list
+        selected_word_list = []
         for index in range(self.ui.listWidget_SelectedWord.count()):
-            fSelectedWord.write(self.ui.listWidget_SelectedWord.item(index).text() + "\n")
+            selected_word_list.append(self.ui.listWidget_SelectedWord.item(index).text().split("-"))
+        selected_word_list.sort(key = lambda s: int(s[1]))
+    
+        # Save selected words
+        fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'w', encoding="utf-8")
+        for item in selected_word_list:
+            fSelectedWord.write(item[0] + "-" + item[1] + "-" + item[2] + "\n")
         fSelectedWord.close()
+        
+        # Save SelectWord setting
+        fSelectWordSetting = open(Settings.SELECT_WORD_SETTING_PATH, 'w', encoding="utf-8")
+        data = [x.isChecked() for x in self.checkbox_element]
+        fSelectWordSetting.write(str(data))
+        fSelectWordSetting.close()
         
         event.accept() # let the window close
 
