@@ -55,8 +55,6 @@ class Main(QWidget):
             self.name_word_array.append(element_word)
         fNameWords.close()
 
-        pass
-
     def showEvent(self, event):
         # Read name count result for name count
         self.name_count_result_list = []
@@ -64,7 +62,6 @@ class Main(QWidget):
             fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
             for line_word in fNameCountResult:
                 self.name_count_result_list.append(eval(line_word))
-                pass
             fNameCountResult.close()
         else:
             print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
@@ -90,7 +87,6 @@ class Main(QWidget):
             fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'r', encoding="utf-8")
             for line_word in fSelectedWord:
                 self.ui.listWidget_SelectedWord.addItem(line_word[:-1])
-                pass
             fSelectedWord.close()
 
         # Update WordList
@@ -136,7 +132,6 @@ class Main(QWidget):
         matcheditems = self.ui.listWidget_SelectedWord.findItems(selected_word, Qt.MatchExactly)
         if len(matcheditems) == 0:
             self.ui.listWidget_SelectedWord.addItem(selected_word)
-        pass
         
     def listWidget_SelectedWord_DoubleClicked(self):
     
@@ -145,7 +140,6 @@ class Main(QWidget):
             return
 
         self.ui.listWidget_SelectedWord.takeItem(selected_word_index)
-        pass
 
     def button_WordList(self):
         
@@ -162,8 +156,6 @@ class Main(QWidget):
             if self.checkbox_element[element_index].isChecked():
                 for name_word in self.name_word_array[name_count-1][element_index]:
                     self.ui.listWidget_WordList.addItem(name_word+"-"+str(name_count)+"-"+element5_chinese[element_index])
-        
-        pass
 
     #------------------------------------------------------
     #               FUNCTION IMPLEMENT
@@ -178,9 +170,6 @@ class Main(QWidget):
             if item[2] not in name_count_collect:
                 name_count_collect.append(item[2])
         return sorted(name_count_collect)
-
-    def Element5_Index(self, element5_list):
-        return ["金", "木", "水", "火", "土"].index(element5_list[2])
 
     def SelectedWord_SortFunc(self, selected_word_item):
         return int(selected_word_item[1]) * 10 + ["金", "木", "水", "火", "土"].index(selected_word_item[2])

@@ -39,8 +39,6 @@ class Main(QWidget):
         self.ui.pushButton_Add.clicked.connect(self.pushButton_Add_Clicked)
         self.ui.pushButton_Remove.clicked.connect(self.pushButton_Remove_Clicked)
 
-        pass
-
     def showEvent(self, event):
         # Read selected name count list
         self.selected_name_count_list = []
@@ -48,7 +46,6 @@ class Main(QWidget):
             fNameCountResult = open(Settings.SELECTED_NAME_COUNT_PATH, 'r', encoding="utf-8")
             for line_word in fNameCountResult:
                 self.selected_name_count_list.append(eval(line_word))
-                pass
             fNameCountResult.close()
         else:
             print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
@@ -121,8 +118,6 @@ class Main(QWidget):
         self.ui.listWidget_SuggestNameCount.addItems(name_count_list_string)
 
         self.ShowSuggestNameCount(-1)
-        
-        pass
 
     def ShowSelectedNameCount(self, name_count_index):
         self.ShowNameCount(name_count_index, self.selected_name_count_list)
@@ -152,6 +147,4 @@ class Main(QWidget):
             self.ui.textEdit_NameCountDescription.append(description_string)
 
         self.ui.textEdit_NameCountDescription.verticalScrollBar().setValue(0);
-        
-        pass
         

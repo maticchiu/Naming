@@ -34,12 +34,9 @@ class Main(QWidget):
         self.ui.pushButton_AddFullName.clicked.connect(self.button_AddFullName)
         self.ui.pushButton_Random.clicked.connect(self.button_RandomName)
 
-
         #
         # File Read
         #
-
-        pass
 
     def showEvent(self, event):
         self.selected_word = []
@@ -75,7 +72,6 @@ class Main(QWidget):
         else:
             print("File Not Exist: ", Settings.FULL_NAME_PATH)
 
-
         event.accept()
 
     def closeEvent(self, event):
@@ -83,7 +79,6 @@ class Main(QWidget):
         for index in range(self.ui.listWidget_FullName.count()):
             fFullName.write(self.ui.listWidget_FullName.item(index).text() + "\n")
         fFullName.close()
-
         
         event.accept() # let the window close
 
@@ -106,8 +101,6 @@ class Main(QWidget):
         self.ui.listWidget_Name2.setCurrentRow(random.randrange(self.ui.listWidget_Name2.count()))
         
         self.ui.lineEdit_RandomName.setText(self.last_name + self.ui.listWidget_Name1.currentItem().text() + self.ui.listWidget_Name2.currentItem().text())
-        
-        pass
 
     def button_AddFullName(self):
         if self.ui.listWidget_Name1.currentRow() == -1 or self.ui.listWidget_Name2.currentRow() == -1:
@@ -117,8 +110,6 @@ class Main(QWidget):
         matcheditems = self.ui.listWidget_FullName.findItems(full_name, Qt.MatchExactly)
         if len(matcheditems) == 0:
             self.ui.listWidget_FullName.addItem(full_name)
-
-        pass
 
     def listWidget_NameCount_SelectionChanged(self):
     
@@ -137,11 +128,4 @@ class Main(QWidget):
                 self.ui.listWidget_Name1.addItem(word[0])
             if int(word[1]) == name_count_list[2]:
                 self.ui.listWidget_Name2.addItem(word[0])
-       
-        pass
-
-    #
-    #   COMPONENT
-    #
-        
 
