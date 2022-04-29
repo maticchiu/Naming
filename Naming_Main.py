@@ -51,6 +51,8 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
+        self.setFixedSize(690, 345)
+
         #
         # Parameters
         #
@@ -292,6 +294,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
 ###################################################
 if __name__ == '__main__':
     import sys
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
     window.show()
