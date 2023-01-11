@@ -111,6 +111,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
             self.last_name_count_list.append(line[:-1])     # Ignore '\n'
         fLastNameCount.close()
 
+        self.lineEdit_LastName_TextChanged()    # Run once while initialization
 
     def closeEvent(self, event):
     
