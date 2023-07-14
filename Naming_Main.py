@@ -4,7 +4,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtCore import QRegExp
+# from PyQt5.QtCore import QRegExp
 
 import datetime
 import os
@@ -15,6 +15,7 @@ import NameCountResult as ncr
 import SelectWord as sw
 import SelectFullName as sfn
 
+import bazi
 import Settings
 
 
@@ -22,12 +23,18 @@ import Settings
 #                   Constant
 ###################################################
 
+# ----------------
+# 5 Level
+# ----------------
 # 天 sky
 # 地 ground
 # 人 person
 # 總 total
 # 外 appearance
 
+# ----------------
+# 5 Element
+# ----------------
 # 金 gold
 # 木 wood
 # 水 water
@@ -40,6 +47,7 @@ DICT_KEY_5LEVEL_THRESHOLD = "5LvTh"     # Value: 60 or 70
 DICT_KEY_COUNT_MIN = "CountMin"         # Value: 5 ~ 20
 DICT_KEY_COUNT_MAX = "CountMax"         # Value: 5 ~ 20
 DICT_KEY_HALF_LUCK = "HalfLuck"         # Value: 0: Unchecked; 1: Checked
+DICT_KEY_BIRTH = "Birth"                # Birth time
 
 ###################################################
 #                   Main class
@@ -51,7 +59,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
-        self.setFixedSize(690, 345)
+        # self.setFixedSize(690, 345)
 
         #
         # Parameters
@@ -67,6 +75,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         # Connect
         #
         self.pushButton_GetNameCount.clicked.connect(self.button_GetNameCount)
+        self.pushButton_FiveElementScore.clicked.connect(self.button_FiveElementScore)
         self.pushButton_SelectNameWord.clicked.connect(self.button_SelectNameWord)
         self.pushButton_SelectFullName.clicked.connect(self.button_SelectFullName)
         self.lineEdit_LastName.textChanged.connect(self.lineEdit_LastName_TextChanged)
@@ -97,6 +106,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
             self.spinBox_NameCount_Min.setValue(self.main_setting_dict[DICT_KEY_COUNT_MIN])
             self.spinBox_NameCount_Max.setValue(self.main_setting_dict[DICT_KEY_COUNT_MAX])
             self.checkBox_HalfLuck.setChecked(self.main_setting_dict[DICT_KEY_HALF_LUCK])
+            self.dateTimeEdit_Birth.setDateTime(QDateTime.fromString(self.main_setting_dict[DICT_KEY_BIRTH], self.dateTimeEdit_Birth.displayFormat()))
             fMainSetting.close()
 
         # Read NameCountDescription
@@ -129,7 +139,7 @@ class Main(QMainWindow, ui.Ui_MainWindow):
             self.main_setting_dict[DICT_KEY_HALF_LUCK] = 1
         else: 
             self.main_setting_dict[DICT_KEY_HALF_LUCK] = 0
-        
+        self.main_setting_dict[DICT_KEY_BIRTH] = QDateTime.toString(self.dateTimeEdit_Birth.dateTime(), self.dateTimeEdit_Birth.displayFormat())
         fMainSetting.write(json.dumps(self.main_setting_dict))
         fMainSetting.close()
     
@@ -152,10 +162,23 @@ class Main(QMainWindow, ui.Ui_MainWindow):
                 break
         pass
     
+    def button_FiveElementScore(self):
+        solar_date = self.dateTimeEdit_Birth.date()
+        solar_time = self.dateTimeEdit_Birth.time()
+        y = solar_date.year()
+        m = solar_date.month()
+        d = solar_date.day()
+        h = solar_time.hour()
+        solar_string = bazi.getSolarString(y, m, d, h)
+        lunar_string = bazi.getLunarString(y, m, d, h)
+        score = bazi.getScore(y, m, d, h)
+        self.textEdit_Log.append(f"國曆：{solar_string}")
+        self.textEdit_Log.append(f"農曆：{lunar_string}")
+        self.textEdit_Log.append(f"五行分數：\n{score}\n")
+
     def button_SelectNameWord(self):
         self.SelectWord.setWindowModality(Qt.ApplicationModal)  # set sub-window on top
         self.SelectWord.show()
-        pass
 
     def button_GetNameCount(self):
     
@@ -183,13 +206,11 @@ class Main(QMainWindow, ui.Ui_MainWindow):
         self.NameCountResult.SetSuggestNameCount(suggest_name_count_list)
         self.NameCountResult.setWindowModality(Qt.ApplicationModal)
         self.NameCountResult.show()
-        pass
 
     def button_SelectFullName(self):
         self.SelectFullName.setWindowModality(Qt.ApplicationModal)
         self.SelectFullName.show()
         self.SelectFullName.last_name = self.lineEdit_LastName.text()
-        pass
 
     #------------------------------------------------------
     #               FUNCTION IMPLEMENT

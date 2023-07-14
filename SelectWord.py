@@ -1,42 +1,46 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtWidgets
+# from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtCore import QRegExp
+# from PyQt5.QtCore import QRegExp
 
 import os.path
 
-import SelectWord_ui as ui
+from SelectWord_ui import Ui_Form_SelectWord
 
 import Settings
 
 
-class Main(QWidget):
+class Main(QWidget, Ui_Form_SelectWord):
     
     def __init__(self):
         super().__init__()
-        self.ui = ui.Ui_Form_SelectWord()
-        self.ui.setupUi(self)
+        self.setupUi(self)
 
         #
         # Parameters
         #
         self.name_word_array = []
-        self.checkbox_element = [self.ui.checkBox_SelectWord_Gold, self.ui.checkBox_SelectWord_Wood, self.ui.checkBox_SelectWord_Water, self.ui.checkBox_SelectWord_Fire, self.ui.checkBox_SelectWord_Earth]
+        self.checkbox_element = [self.checkBox_SelectWord_Gold, self.checkBox_SelectWord_Wood, self.checkBox_SelectWord_Water, self.checkBox_SelectWord_Fire, self.checkBox_SelectWord_Earth]
 
         #
         # Connect
         #
-        self.ui.pushButton_ListWord.clicked.connect(self.button_WordList)
-        self.ui.pushButton_AddWord.clicked.connect(self.listWidget_WordList_DoubleClicked)
-        self.ui.pushButton_RemoveWord.clicked.connect(self.listWidget_SelectedWord_DoubleClicked)
+        self.pushButton_AddWord.clicked.connect(self.listWidget_WordList_DoubleClicked)
+        self.pushButton_RemoveWord.clicked.connect(self.listWidget_SelectedWord_DoubleClicked)
 
-        self.ui.listWidget_WordList.itemDoubleClicked.connect(self.listWidget_WordList_DoubleClicked)
-        self.ui.listWidget_SelectedWord.itemDoubleClicked.connect(self.listWidget_SelectedWord_DoubleClicked)
+        self.listWidget_WordList.itemDoubleClicked.connect(self.listWidget_WordList_DoubleClicked)
+        self.listWidget_SelectedWord.itemDoubleClicked.connect(self.listWidget_SelectedWord_DoubleClicked)
 
-        self.ui.comboBox_NameCount.currentTextChanged.connect(self.comboBox_NameCount_TextChanged)
+        self.comboBox_NameCount.currentTextChanged.connect(self.UpdateWordList)
+
+        self.checkBox_SelectWord_Gold.stateChanged.connect(self.UpdateWordList)
+        self.checkBox_SelectWord_Wood.stateChanged.connect(self.UpdateWordList)
+        self.checkBox_SelectWord_Water.stateChanged.connect(self.UpdateWordList)
+        self.checkBox_SelectWord_Fire.stateChanged.connect(self.UpdateWordList)
+        self.checkBox_SelectWord_Earth.stateChanged.connect(self.UpdateWordList)
 
         #
         # File Read
@@ -67,10 +71,10 @@ class Main(QWidget):
             print("File Not Exist: ", Settings.SELECTED_NAME_COUNT_PATH)
 
         # Add name count to combobox
-        self.ui.comboBox_NameCount.clear()
+        self.comboBox_NameCount.clear()
         name_count_list = [x[0] for x in self.name_count_result_list]
         name_count_list_str = [str(x) for x in self.NameCountSort(name_count_list)]
-        self.ui.comboBox_NameCount.addItems(name_count_list_str)
+        self.comboBox_NameCount.addItems(name_count_list_str)
 
         # Read SelectWord setting
         if os.path.isfile(Settings.SELECT_WORD_SETTING_PATH):
@@ -83,14 +87,14 @@ class Main(QWidget):
 
         # Read selected words
         if os.path.isfile(Settings.SELECTED_WORD_PATH):
-            self.ui.listWidget_SelectedWord.clear()
+            self.listWidget_SelectedWord.clear()
             fSelectedWord = open(Settings.SELECTED_WORD_PATH, 'r', encoding="utf-8")
             for line_word in fSelectedWord:
-                self.ui.listWidget_SelectedWord.addItem(line_word[:-1])
+                self.listWidget_SelectedWord.addItem(line_word[:-1])
             fSelectedWord.close()
 
         # Update WordList
-        self.ui.pushButton_ListWord.click()
+        self.UpdateWordList()
 
         event.accept()
 
@@ -98,8 +102,8 @@ class Main(QWidget):
 
         # Sort selected word list
         selected_word_list = []
-        for index in range(self.ui.listWidget_SelectedWord.count()):
-            selected_word_list.append(self.ui.listWidget_SelectedWord.item(index).text().split("-"))
+        for index in range(self.listWidget_SelectedWord.count()):
+            selected_word_list.append(self.listWidget_SelectedWord.item(index).text().split("-"))
         selected_word_list.sort(key = self.SelectedWord_SortFunc)
     
         # Save selected words
@@ -119,43 +123,40 @@ class Main(QWidget):
     #------------------------------------------------------
     #               COMPONENT
     #------------------------------------------------------
-    
-    def comboBox_NameCount_TextChanged(self):
-        self.ui.pushButton_ListWord.click()
 
     def listWidget_WordList_DoubleClicked(self):
     
-        if self.ui.listWidget_WordList.currentRow() == -1:
+        if self.listWidget_WordList.currentRow() == -1:
             return
             
-        selected_word = self.ui.listWidget_WordList.currentItem().text()
-        matcheditems = self.ui.listWidget_SelectedWord.findItems(selected_word, Qt.MatchExactly)
+        selected_word = self.listWidget_WordList.currentItem().text()
+        matcheditems = self.listWidget_SelectedWord.findItems(selected_word, Qt.MatchExactly)
         if len(matcheditems) == 0:
-            self.ui.listWidget_SelectedWord.addItem(selected_word)
+            self.listWidget_SelectedWord.addItem(selected_word)
         
     def listWidget_SelectedWord_DoubleClicked(self):
     
-        selected_word_index = self.ui.listWidget_SelectedWord.currentRow()
+        selected_word_index = self.listWidget_SelectedWord.currentRow()
         if selected_word_index == -1:
             return
 
-        self.ui.listWidget_SelectedWord.takeItem(selected_word_index)
+        self.listWidget_SelectedWord.takeItem(selected_word_index)
 
     def button_WordList(self):
         
-        if self.ui.comboBox_NameCount.currentIndex() == -1:
+        if self.comboBox_NameCount.currentIndex() == -1:
             return
         
         element5_chinese = ["金", "木", "水", "火", "土"]
         
-        name_count = int(self.ui.comboBox_NameCount.currentText())
+        name_count = int(self.comboBox_NameCount.currentText())
 
-        self.ui.listWidget_WordList.clear()
+        self.listWidget_WordList.clear()
         
         for element_index in range(5):
             if self.checkbox_element[element_index].isChecked():
                 for name_word in self.name_word_array[name_count-1][element_index]:
-                    self.ui.listWidget_WordList.addItem(name_word+"-"+str(name_count)+"-"+element5_chinese[element_index])
+                    self.listWidget_WordList.addItem(name_word+"-"+str(name_count)+"-"+element5_chinese[element_index])
 
     #------------------------------------------------------
     #               FUNCTION IMPLEMENT
@@ -174,4 +175,18 @@ class Main(QWidget):
     def SelectedWord_SortFunc(self, selected_word_item):
         return int(selected_word_item[1]) * 10 + ["金", "木", "水", "火", "土"].index(selected_word_item[2])
 
+    def UpdateWordList(self):
+        if self.comboBox_NameCount.currentIndex() == -1:
+            return
+        
+        element5_chinese = ["金", "木", "水", "火", "土"]
+        
+        name_count = int(self.comboBox_NameCount.currentText())
+
+        self.listWidget_WordList.clear()
+        
+        for element_index in range(5):
+            if self.checkbox_element[element_index].isChecked():
+                for name_word in self.name_word_array[name_count-1][element_index]:
+                    self.listWidget_WordList.addItem(name_word+"-"+str(name_count)+"-"+element5_chinese[element_index])
 
