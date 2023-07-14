@@ -4,16 +4,16 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-# from PyQt5.QtCore import QRegExp
+from PyQt5.QtWidgets import QMessageBox
 
 import datetime
 import os
 import json
 
-import Naming_ui as ui
-import NameCountResult as ncr
-import SelectWord as sw
-import SelectFullName as sfn
+import ui.form.Naming_ui as ui
+import ui.NameCountResult as ncr
+import ui.SelectWord as sw
+import ui.SelectFullName as sfn
 
 import bazi
 import Settings
@@ -54,17 +54,21 @@ DICT_KEY_BIRTH = "Birth"                # Birth time
 ###################################################
 class Main(QMainWindow, ui.Ui_MainWindow):
 
-
     def __init__(self):
         super().__init__()
         self.setupUi(self)
 
         # self.setFixedSize(690, 345)
 
+        if not os.path.isdir(Settings.DATA_PATH):
+            msg = QMessageBox()
+            msg.setWindowTitle("Error")
+            msg.setText(f"Folder {Settings.DATA_PATH} does not exist!")
+            msg.exec_()
+            os._exit(0)
         #
         # Parameters
         #
-        Settings.init()                         # Global parameter initialization
         self.name_count_description = []        # to save description from text file
         self.last_name_count_list = []
         self.main_setting_list = []
