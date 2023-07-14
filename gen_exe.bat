@@ -7,3 +7,4 @@ mkdir .\NamingExe\Data
 xcopy .\Data .\NamingExe\Data /e
 xcopy Readme.txt .\NamingExe
 rmdir dist /S /Q
+del /Q Naming_Main.spec
